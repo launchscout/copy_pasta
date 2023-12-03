@@ -4,7 +4,11 @@ import { liveState, liveStateConfig } from 'phx-live-state';
 
 @customElement('copy-pasta')
 @liveState({
-  topic: 'copy_pasta:all'
+  topic: 'copy_pasta:all',
+  events: {
+    send: ['serve-dapasta'],
+    receive: ['eat-dapasta']
+  }
 })
 export class CopyPastaElement extends LitElement {
 
@@ -12,7 +16,26 @@ export class CopyPastaElement extends LitElement {
   @property()
   url: string = '';
 
+  constructor() {
+    super();
+    this.addEventListener('eat-dapasta', ({detail: {pasta}}) => {
+      console.debug('Eating pasta', pasta);
+      navigator.clipboard.writeText(pasta);
+    });
+  }
+
   render() {
-    return html`<h1>Hello there!</h1>`
+    return html`<button @click=${this.serveDaPasta}>Serve it up, nice and hot. Maybe things aren't as bad as you thought.</button>`
+  }
+
+  async serveDaPasta() {
+    const pasta = await navigator.clipboard.readText();
+    this.dispatchEvent(new CustomEvent('serve-dapasta', { detail: {pasta } }));
+  }
+}
+
+declare global {
+  interface HTMLElementEventMap {
+    'eat-dapasta': CustomEvent<{ pasta: string }>;
   }
 }
