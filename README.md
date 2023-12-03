@@ -7,3 +7,4 @@ mix live_state.gen.channel CopyPasta
 mix live_state.gen.element CopyPasta copy-pasta
 ```
 
+# copy_pasta
